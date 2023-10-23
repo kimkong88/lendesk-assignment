@@ -38,7 +38,7 @@ docker-compose up --build
 
 ## Test
 
--   Unit test covers only auth service. Test can be run with below command, you should see 5 unit tests.
+-   Unit test covers only auth service and token service. Test can be run with below command,
 
 ```
 npm test
@@ -50,3 +50,4 @@ npm test
     -   Swagger doc to demonstrate API.
     -   Integration test.
     -   Unit tests for custom utilities and middleware.
+    -   Endpoint to test if JWT token works
