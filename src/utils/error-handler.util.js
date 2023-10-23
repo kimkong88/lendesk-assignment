@@ -9,6 +9,8 @@ const errorHandler = (err, req, res, next) => {
         stack: err.stack,
     };
 
+    console.debug(response);
+
     res.status(statusCode || httpStatus.INTERNAL_SERVER_ERROR).send(response);
 };
 

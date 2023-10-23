@@ -1,6 +1,6 @@
 const Joi = require("@hapi/joi");
 const httpStatus = require("http-status");
-const pick = require("../utils/pick");
+const pick = require("../utils/pick.util");
 const ApiError = require("../utils/api-error.util");
 
 // Middleware function for request validation using a schema.
