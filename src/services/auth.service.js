@@ -1,13 +1,69 @@
-const register = async (email, password) => {
+const bcrypt = require("bcryptjs");
+const ApiError = require("../utils/api-error.util");
+const httpStatus = require("http-status");
+
+/**
+ * register a user using email and password
+ * @param {string} email
+ * @param {string} password
+ * @param {RedisClientService} redisClientService
+ * @returns returns an user object
+ */
+const register = async (email, password, redisClientService) => {
+    const hashedPassword = await bcrypt.hash(password, 8);
+
     const user = {
         email,
-        password,
+        password: hashedPassword,
+        createdAt: new Date(),
     };
-    return user;
+
+    try {
+        const res = await redisClientService.jsonGet(`user:${email}`);
+
+        if (res) {
+            throw new ApiError(httpStatus.BAD_REQUEST, "Registration failed");
+        }
+
+        await redisClientService.jsonSet(
+            `user:${email}`,
+            ".",
+            JSON.stringify(user)
+        );
+
+        return user;
+    } catch (e) {
+        throw new ApiError(e.statusCode, e.message);
+    }
 };
 
-const login = async (email, password) => {
-    const user = { email, password };
+/**
+ * authenticate a user using email and password
+ * @param {string} email
+ * @param {string} password
+ * @param {RedisClientService} redisClientService
+ * @returns returns an user object excluding the password
+ */
+const login = async (email, password, redisClientService) => {
+    const res = await redisClientService.jsonGet(`user:${email}`);
+
+    if (!res) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized");
+    }
+
+    const user = JSON.parse(res);
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordMatch) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized");
+    }
+
+    // remove password from response
+    delete user.password;
+
+    // TODO: create an access token for user to use to authenticate
+
     return user;
 };
 
