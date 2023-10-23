@@ -2,7 +2,7 @@ const { promisify } = require("util");
 /**
  * RedisClient service to use promisified methods from redis client
  */
-class RedisClient {
+class RedisClientService {
     constructor(redisClient) {
         ["json_get", "json_set"].forEach(
             (method) => (redisClient[method] = promisify(redisClient[method]))
@@ -18,4 +18,4 @@ class RedisClient {
     }
 }
 
-module.exports = RedisClient;
+module.exports = RedisClientService;

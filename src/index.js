@@ -3,8 +3,8 @@ const app = require("./app");
 const server = http.createServer(app);
 const redis = require("redis");
 const rejson = require("redis-rejson");
-const RedisClient = require("./services/redis-client.service");
-const AuthService = require("./services/auth.service");
+const RedisClientService = require("./services/redis-client.service");
+
 rejson(redis);
 
 require("dotenv").config();
@@ -24,7 +24,7 @@ server.listen({ port: PORT }, () => {
             password: REDIS_PASSWORD,
         });
 
-        const redisClientService = new RedisClient(redisClient);
+        const redisClientService = new RedisClientService(redisClient);
 
         // this pattern is only used for external services that will be consumed
         app.set("redisClientService", redisClientService);
