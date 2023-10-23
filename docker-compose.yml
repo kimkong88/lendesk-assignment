@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+    node-app:
+        build: .
+        image: node-app
+        ports:
+            - "3000:3000"
+        depends_on:
+            - redis
+        volumes:
+            - .:/usr/src/node-app
+        networks:
+            - node-network
+
+    redis:
+        image: redislabs/rejson:latest
+        container_name: redis.node-app.docker
+        restart: unless-stopped
+        environment:
+            REDIS_PASSWORD: ${REDIS_PASSWORD}
+        command: redis-server --loadmodule "/usr/lib/redis/modules/rejson.so" --requirepass "$REDIS_PASSWORD"
+        ports:
+            - 127.0.0.1:${REDIS_PORT}:6379
+        networks:
+            - node-network
+networks:
+    node-network:
+        driver: bridge
