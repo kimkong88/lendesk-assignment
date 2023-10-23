@@ -92,6 +92,7 @@ describe("AuthService", () => {
 
             expect(result).toEqual({
                 email,
+                accessToken: expect.any(Object),
                 createdAt: expect.any(String),
             });
 

@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs");
 const ApiError = require("../utils/api-error.util");
 const httpStatus = require("http-status");
+const { tokenService } = require(".");
+const moment = require("moment");
 
 /**
  * register a user using email and password
@@ -61,6 +63,22 @@ const login = async (email, password, redisClientService) => {
 
     // remove password from response
     delete user.password;
+
+    // create access token
+    const accessTokenExpires = moment().add(
+        process.env.JWT_EXPIRE_MINUTES,
+        "minutes"
+    );
+    const accessToken = {
+        token: tokenService.generateToken(
+            email,
+            accessTokenExpires,
+            process.env.JWT_SECRET
+        ),
+        expires: accessTokenExpires.toDate(),
+    };
+
+    user.accessToken = accessToken;
 
     // TODO: create an access token for user to use to authenticate
 
