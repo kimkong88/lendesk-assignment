@@ -1,8 +1,10 @@
 const express = require("express");
 const xss = require("xss-clean");
-const httpStatus = require("http-status");
 const cors = require("cors");
-
+const routes = require("./routes");
+const { errorHandler } = require("./utils/error-handler.utils");
+const httpStatus = require("http-status");
+const ApiError = require("./utils/api-error.util");
 const app = express();
 
 // indicates that app is running behind proxy
@@ -21,9 +23,15 @@ app.use(xss());
 app.use(cors());
 app.options("*", cors());
 
+// register routes
+app.use("/api", routes);
+
 // send back a 404 error for any unknown api request
 app.use((_, __, next) => {
-    next(new Error(httpStatus.NOT_FOUND, "Not found"));
+    next(new ApiError(httpStatus.NOT_FOUND, "Not found"));
 });
+
+// error handler
+app.use(errorHandler);
 
 module.exports = app;

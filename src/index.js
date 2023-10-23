@@ -26,10 +26,8 @@ server.listen({ port: PORT }, () => {
 
         const redisClientService = new RedisClient(redisClient);
 
-        const authService = new AuthService(redisClientService);
-
+        // this pattern is only used for external services that will be consumed
         app.set("redisClientService", redisClientService);
-        app.set("authService", authService);
 
         console.info(`Redis connected at ${redisEndpointUri}`);
     } catch (e) {

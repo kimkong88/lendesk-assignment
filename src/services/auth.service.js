@@ -1,15 +1,12 @@
-class AuthService {
-    constructor(redisClient) {
-        this.redisClient = redisClient;
-    }
+const register = async (email, password) => {
+    const user = {
+        email,
+        password,
+    };
+    return user;
+};
 
-    register() {
-        console.log("register");
-    }
-
-    login() {
-        console.log("login");
-    }
-}
-
-module.exports = AuthService;
+const login = async (email, password) => {
+    const user = { email, password };
+    return user;
+};
